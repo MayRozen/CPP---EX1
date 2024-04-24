@@ -7,10 +7,10 @@
 
 #include <vector>
 
-class Graph {
+class Graph { // our namespace
 private:
     int numVertices;
-    std::vector<std::vector<int>> adjMatrix;
+    std::vector<std::vector<int>> adjMatrix; // ~array[][]
 
 public:
     Graph(int n); // constructor
