@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include "Graph.hpp"
+using namespace ariel;
 
 Graph::Graph(int n) : numVertices(n) {
     adjMatrix.resize(n, std::vector<int>(n, 0));
@@ -30,13 +31,16 @@ void Graph::loadGraph(const std::vector<std::vector<int>>& adjMat) {
 }
 
 void Graph::printGraph() {
-    std::cout << "The Graph:" << std::endl;
+    int edges = 0;
     for (int i = 0; i < numVertices; ++i) {
         for (int j = 0; j < numVertices; ++j) {
-            std::cout << adjMatrix[i][j] << " ";
+            if(adjMatrix[i][j]!=0){ // Assuming the lack of an edge is expressed by 0
+                edges++;
+            }
         }
         std::cout << std::endl;
     }
+    std::cout << "Graph with "<<numVertices<<" vertices and "<<edges<<" edges." << std::endl;
 }
 
 
