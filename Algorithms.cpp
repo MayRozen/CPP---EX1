@@ -10,11 +10,11 @@
 class Algorithems{
 public:
     int isConnected(Graph g){
-        int numVertices = g.adjMatrix.size();
-        std::vector<bool> visited(numVertices, false);
+        int size = g.getAdjMatrix().size();
+        std::vector<bool> visited(size, false); // This array will tell us whether we run over all the vertices or not
             
         // Perform DFS traversal from the first vertex
-        dfs(0, visited);
+        dfs(g, 0, visited);
 
         // Check if all vertices were visited
         for (bool v : visited) {
@@ -31,17 +31,12 @@ public:
 
 private:
     // Depth-first search (DFS)
-    void dfs(int v, std::vector<bool>& visited) {
-        visited[v] = true;
-        for (int i = 0; i < adjMatrix[v].size(); ++i) {
-            if (adjMatrix[v][i] && !visited[i]) {
-                dfs(i, visited);
+    void dfs(Graph g, int v, std::vector<bool>& visited) {
+        visited[v] = true; // Sign that we run over this vertice
+        for (int i = 0; i < g.getAdjMatrix()[v].size(); i++) {
+            if (g.getAdjMatrix()[v][i] && !visited[i]) { // Run over all tha existing paths from this vertex
+                dfs(g, i, visited); // Recursion = depth
             }
         }
     }
-}
-
-
-
-
-
+};
