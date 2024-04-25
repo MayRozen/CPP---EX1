@@ -14,6 +14,8 @@ private:
 
 public:
     Graph(int n); // constructor
+    int getNumVertices() const;
+    std::vector<std::vector<int>> getAdjMatrix() const;
     void loadGraph(const std::vector<std::vector<int>>& adjMat);
     void printGraph();
 };
