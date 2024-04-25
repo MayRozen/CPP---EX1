@@ -6,6 +6,7 @@
 #include <vector>
 #include "Graph.hpp"
 
+namespace ariel {
 class Algorithms{ // our namespace
 public:
     // return 1 if the graph is a 'connected graph' and 0 else
@@ -23,3 +24,4 @@ public:
     // return a vector which include the Vertices of a negative circle if exist. If not -> return 0.
     std::vector<int> negativeCycle(Graph g);
 };
+}
