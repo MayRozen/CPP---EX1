@@ -7,6 +7,7 @@
 
 #include <vector>
 
+namespace ariel {
 class Graph { // our namespace
 private:
     int numVertices;
@@ -19,5 +20,6 @@ public:
     void loadGraph(const std::vector<std::vector<int>>& adjMat);
     void printGraph();
 };
+}
 
 #endif // GRAPH_HPP
