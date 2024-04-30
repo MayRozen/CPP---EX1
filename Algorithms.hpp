@@ -10,13 +10,13 @@ namespace ariel {
 class Algorithms{ // our namespace
 public:
     // return 1 if the graph is a 'connected graph' and 0 else
-    int isConnected(Graph g);
+    bool isConnected(Graph g);
 
     // return the shortest path between 'start' ans 'end', else -> -1.
     std::vector<int> shortestPath(Graph g,int start,int end);
 
     // Prints a circle if exist, 0 else
-    void isContainsCycle(Graph g);
+    int isContainsCycle(Graph g);
 
     // return the partition of the graph in a bipartite graph. else -> print that there is no negative circle
     std::vector<int> isBipartite(Graph g);
