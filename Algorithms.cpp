@@ -9,11 +9,12 @@
 #include <algorithm>
 #include "Graph.hpp"
 #include "Algorithms.hpp"
+enum Color { UNCOLORED, WHITE, BLACK };
 
 namespace ariel {
 class Algorithms{
 public:
-    int isConnected(Graph g){
+    bool isConnected(Graph g){
         int size = g.getAdjMatrix().size();
         std::vector<bool> visited(size, false); // This array will tell us whether we run over all the vertices or not
             
@@ -41,7 +42,7 @@ public:
         return std::vector<int>{-1}; // If no path found between start and end, return -1
     }
 
-    void isContainsCycle(Graph g){
+    int isContainsCycle(Graph g){
         int numVertices = g.getNumVertices();
         std::vector<int> dist(numVertices, std::numeric_limits<int>::max()); // Initialize distances to infinity
         std::vector<int> prev(numVertices, -1);   // Store predecessors
@@ -78,14 +79,55 @@ public:
                             vertex = prev[vertex];
                         } while (vertex != startVertex);
                         std::cout << startVertex << std::endl;
-                        print = 1; // There is a negative cycle
+                        return;
                     }
                 }
             }
         }
         if(print == 0){
-            std::cout<<"0"<<std::endl; // No negative cycle found
+            std::cout<<"There is no negative cycle"<<std::endl; // No negative cycle found
+            return 0;
         }
+    }
+
+    std::vector<int> isBipartite(Graph g){
+        // If there is a cycle in the graph -> it can't be a bipartite graph
+        if( isContainsCycle(g) != 0){
+            std::cout<<"0"<<std::endl;
+            return;
+        }
+
+        int numVer = g.getNumVertices();
+        std::vector<Color> colors(numVer, UNCOLORED); // First of all, all the vertices are uncolored
+        for (int i = 0; i < numVer; ++i) {
+            if (colors[i] == UNCOLORED) { // Every vertice we pass on will be printed BLACK
+                colors[i] = BLACK;
+                std::queue<int> q;
+                q.push(i);  
+                
+                while (!q.empty()) {
+                    int curr = q.front();
+                    q.pop();
+                    
+                    for (int neighbor = 0; neighbor < numVer; ++neighbor) {
+                    if (Graph[curr][neighbor] == 1) {
+                        if (colors[neighbor] == UNCOLORED) {
+                            colors[neighbor] = (colors[curr] == BLACK) ? WHITE : BLACK;
+                            q.push(neighbor);
+                        } else if (colors[neighbor] == colors[curr]) {
+                            return false; // Graph is not bipartite
+                        }
+                    }
+                }
+            }
+        }
+        return true; // Graph is bipartite
+    }
+
+
+
+
+
     }
 
 // Here are all the auxiliary functions
