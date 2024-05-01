@@ -8,18 +8,18 @@
 #include <vector>
 
 namespace ariel {
-class Graph { // our namespace
-private:
-    int numVertices;
-    std::vector<std::vector<int>> adjMatrix; // ~array[][]
+    class Graph { // our namespace
+    private:
+        int numVertices;
+        std::vector<std::vector<int>> adjMatrix; // ~array[][]
 
-public:
-    Graph(int n); // constructor
-    int getNumVertices() const;
-    std::vector<std::vector<int>> getAdjMatrix() const;
-    void loadGraph(const std::vector<std::vector<int>>& adjMat);
-    void printGraph();
-};
+    public:
+        Graph(int n); // constructor
+        int getNumVertices() const;
+        std::vector<std::vector<int>> getAdjMatrix() const;
+        void loadGraph(const std::vector<std::vector<int>>& adjMat);
+        void printGraph();
+    };
 }
 
 #endif // GRAPH_HPP
