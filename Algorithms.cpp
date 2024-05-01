@@ -10,8 +10,7 @@
 #include "Graph.hpp"
 #include "Algorithms.hpp"
 enum Color { UNCOLORED, WHITE, BLACK };
-
-namespace ariel {
+using namespace ariel;
 class Algorithms{
 public:
     bool isConnected(Graph g){
@@ -124,7 +123,17 @@ public:
         return true; // Graph is bipartite
     }
 
+    std::vector<int> negativeCycle(Graph g){
+        // If there is no cycle in the graph -> there is no reson to continue. So print "0"
+        if( isContainsCycle(g) == 0){
+            std::cout<<"0"<<std::endl;
+            return;
+        }
 
+        // Using Dijkstra for checking if there is a negative cycle
+
+
+    }
 
 
 
@@ -181,4 +190,4 @@ private:
         return path;
     }
 };
-}
+
