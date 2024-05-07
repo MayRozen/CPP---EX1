@@ -89,7 +89,7 @@ public:
         }
     }
 
-    std::vector<int> isBipartite(Graph g){
+    void isBipartite(Graph g){
         // If there is a cycle in the graph -> it can't be a bipartite graph
         if( isContainsCycle(g) != 0){
             std::cout<<"0"<<std::endl;
@@ -97,47 +97,60 @@ public:
         }
 
         int numVer = g.getNumVertices();
+        std::vector<int> A, B; // Vertices of group A and group B
+        std::queue<int> Q; // Queue for BFS traversal 
         std::vector<Color> colors(numVer, UNCOLORED); // First of all, all the vertices are uncolored
-        for (int i = 0; i < numVer; ++i) {
+        for (int i = 0; i < numVer; ++i) { // Start BFS traversal from each uncolored vertex
             if (colors[i] == UNCOLORED) { // Every vertice we pass on will be printed BLACK
                 colors[i] = BLACK;
-                std::queue<int> q;
-                q.push(i);  
+                A.push_back(i); // Add the first vertex to group A
+                Q.push(i);
                 
-                while (!q.empty()) {
-                    int curr = q.front();
-                    q.pop();
-                    
-                    for (int neighbor = 0; neighbor < numVer; ++neighbor) {
-                    if (Graph[curr][neighbor] == 1) {
+                 while (!Q.empty()) {
+                int curr = Q.front();
+                Q.pop();
+
+                for (int neighbor = 0; neighbor < numVer; ++neighbor) {
+                    if (g[curr][neighbor] == 1) {
                         if (colors[neighbor] == UNCOLORED) {
-                            colors[neighbor] = (colors[curr] == BLACK) ? WHITE : BLACK;
-                            q.push(neighbor);
+                            colors[neighbor] = (colors[curr] == BLACK) ? WHITE : BLACK; // Alternate between group A (black) and group B (white)
+                            Q.push(neighbor);
+                            if (colors[neighbor] == BLACK) {
+                                A.push_back(neighbor);
+                            } else {
+                                B.push_back(neighbor);
+                            }
                         } else if (colors[neighbor] == colors[curr]) {
-                            return false; // Graph is not bipartite
+                            std::cout << "0" << std::endl;
+                            return; // Graph is not bipartite
                         }
                     }
                 }
             }
         }
-        return true; // Graph is bipartite
+        std::cout << "The graph is bipartite: A={";
+        for(int i=0; i<A.size()-1; i++){
+            std::cout << A[i]<<", ";
+        }
+        std::cout << A[A.size()-1]<<"}, B={"; // The last vertex
+        for(int i=0; i<B.size(); i++){
+            std::cout << B[i];
+        }
+        std::cout << B[B.size()-1]<<"}."<<std::endl; // The last vertex
+        
+        return; // Graph is bipartite
     }
 
     std::vector<int> negativeCycle(Graph g){
-        // If there is no cycle in the graph -> there is no reson to continue. So print "0"
+        // If there is no cycle in the graph -> there is no reason to continue. So print "0"
         if( isContainsCycle(g) == 0){
             std::cout<<"0"<<std::endl;
             return;
         }
 
         // Using Dijkstra for checking if there is a negative cycle
-
-
     }
-
-
-
-    }
+}
 
 // Here are all the auxiliary functions
 private: 
