@@ -19,9 +19,10 @@ namespace ariel {
         int isContainsCycle(Graph g);
 
         // return the partition of the graph in a bipartite graph. else -> print that there is no negative circle
-        std::vector<int> isBipartite(Graph g);
+        void isBipartite(Graph g);
 
         // return a vector which include the Vertices of a negative circle if exist. If not -> return 0.
         std::vector<int> negativeCycle(Graph g);
     };
+    
 }
