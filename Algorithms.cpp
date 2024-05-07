@@ -111,7 +111,7 @@ public:
                 Q.pop();
 
                 for (int neighbor = 0; neighbor < numVer; ++neighbor) {
-                    if (g[curr][neighbor] == 1) {
+                    if (g.getAdjMatrix()[curr][neighbor] == 1) {
                         if (colors[neighbor] == UNCOLORED) {
                             colors[neighbor] = (colors[curr] == BLACK) ? WHITE : BLACK; // Alternate between group A (black) and group B (white)
                             Q.push(neighbor);
@@ -137,18 +137,63 @@ public:
             std::cout << B[i];
         }
         std::cout << B[B.size()-1]<<"}."<<std::endl; // The last vertex
-        
         return; // Graph is bipartite
     }
 
-    std::vector<int> negativeCycle(Graph g){
+    std::vector<int> negativeCycle(Graph g){  
         // If there is no cycle in the graph -> there is no reason to continue. So print "0"
         if( isContainsCycle(g) == 0){
             std::cout<<"0"<<std::endl;
-            return;
+            return std::vector<int>(); // Return an empty vector if no negative cycle found
         }
 
-        // Using Dijkstra for checking if there is a negative cycle
+        // Using Bellman-Ford algorithm to find the negative cycle
+        int numVertices = g.getNumVertices();
+
+        // Intialize the distance and π(v) of the starting vertex
+        std::vector<int> dist(numVertices, std::numeric_limits<int>::max()); // Initialize distances to infinity
+        std::vector<int> prev(numVertices, -1);   // Store predecessors
+
+        // Relax all edges repeatedly
+        for (int i = 0; i < numVertices - 1; i++) {
+            for (int u = 0; u < numVertices; u++) {
+                for (int v = 0; v < numVertices; v++) {
+                    if ((g.getAdjMatrix()[u][v] != 0)&&(dist[u] + g.getAdjMatrix()[u][v] < dist[v])) { // Check if there is an edge
+                            dist[v] = dist[u] + g.getAdjMatrix()[u][v];
+                            prev[v] = u;
+                    }
+                        
+                }
+            }
+        }
+
+        // Check for negative cycles
+        for (int u = 0; u < numVertices; ++u) {
+            for (int v = 0; v < numVertices; ++v) {
+                if (g.getAdjMatrix()[u][v] != 0) { // Check if there is an edge
+                    if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
+                        // Negative cycle found, construct the cycle and return it
+                        std::vector<int> cycle;
+                        int vertex = v;
+                        do {
+                            cycle.push_back(vertex);
+                            vertex = prev[vertex];
+                        } while (vertex != v);
+
+                        std::cout<<"The cycle is: "<<std::endl;
+                        for(int i=0; i<cycle.size()-1; i++){
+                            std::cout<<cycle[i]<<"->"<<std::endl;
+                        }
+                        std::cout<<cycle[size()+1]<<std::endl;
+                        return cycle;
+                    }
+                }
+            }  
+        } 
+
+        std::cout<<"0"<<std::endl;
+        return std::vector<int>(); // No negative cycle found
+        
     }
 }
 
@@ -203,4 +248,5 @@ private:
         return path;
     }
 };
+
 
