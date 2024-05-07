@@ -16,6 +16,12 @@ run: demo
 demo: Demo.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o demo
 
+algorithm: Algorithm.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o algorithm
+
+graph: Graph.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o graph
+
 test: TestCounter.o Test.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o test
 
@@ -30,4 +36,4 @@ valgrind: demo test
 	$(CXX) $(CXXFLAGS) --compile $< -o $@
 
 clean:
-	rm -f *.o demo test
+	rm -f *.o demo test algorithm graph
