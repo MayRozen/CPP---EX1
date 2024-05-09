@@ -7,10 +7,6 @@
 #include "Graph.hpp"
 using namespace ariel;
 
-Graph::Graph(int n) : numVertices(n) {
-    adjMatrix.resize(n, std::vector<int>(n, 0));
-}
-
 // getter to numVertices
 int Graph::getNumVertices() const{
     return numVertices;
