@@ -1,29 +1,23 @@
-/*  ID: 212051007
-    Mail: mayrozen45@gmail.com
-*/
+# ID: 212051007
+# Mail: mayrozen45@gmail.com
+
 #!make -f
 
-CXX=clang
-CXXFLAGS=-std=c++11 -Werror -Wsign-conversion
-VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
+CXX = clang++
+CXXFLAGS = -std=c++11 -Werror -Wsign-conversion
+VALGRIND_FLAGS = -v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
 
-SOURCES=Graph.cpp Algorithm.cpp TestCounter.cpp Test.cpp
-OBJECTS=$(subst .cpp,.o,$(SOURCES))
+SOURCES = Graph.cpp Algorithm.cpp TestCounter.cpp Test.cpp
+OBJECTS = $(SOURCES: .cpp=.o)
 
 run: demo
 	./$^
 
-demo: Demo.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o demo
+demo: Demo.o $(filter-out TestCounter.o Test.o, $(OBJECTS))
+	$(CXX) $(CXXFLAGS) -v $^ -o demo
 
-algorithm: Algorithm.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o algorithm
-
-graph: Graph.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o graph
-
-test: TestCounter.o Test.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o test
+test: TestCounter.o Test.o $(filter-out TestCounter.o Test.o, $(OBJECTS))
+	$(CXX) $(CXXFLAGS) -v $^ -o test
 
 tidy:
 	clang-tidy $(SOURCES) -checks=bugprone-*,clang-analyzer-*,cppcoreguidelines-*,performance-*,portability-*,readability-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-owning-memory --warnings-as-errors=-* --
