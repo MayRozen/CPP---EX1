@@ -9,9 +9,12 @@
 
 namespace ariel {
     class Graph { // our namespace
+        Graph::Graph(int n) : numVertices(n) {
+        adjMatrix.resize(n, std::vector<int>(n, 0));
+        }
     private:
         int numVertices;
-        std::vector<std::vector<int>> adjMatrix; // ~array[][]
+        std::vector<std::vector<int>> adjMatrix;
 
     public:
         Graph(int n); // constructor
