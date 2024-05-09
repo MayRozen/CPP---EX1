@@ -11,9 +11,11 @@
 #include "Algorithms.hpp"
 enum Color { UNCOLORED, WHITE, BLACK };
 using namespace ariel;
-class Algorithms{
-public:
-    bool isConnected(Graph g){
+
+void dfs(Graph &g, int v, std::vector<bool>& visited);
+std::vector<int> dijkstra(const Graph& g, int start, int end);
+namespace Algorithms{
+    static bool isConnected(Graph &g){
         int size = g.getAdjMatrix().size();
         std::vector<bool> visited(size, false); // This array will tell us whether we run over all the vertices or not
             
@@ -28,7 +30,7 @@ public:
         return true; // if 'false' were not return -> Graph is connected
     }
 
-    std::vector<int> shortestPath(Graph g,int start,int end){
+    static std::vector<int> shortestPath(const Graph &g,int start,int end){
         std::vector<int> shortest; // First of all, our vector includes only one vertex -> start
         shortest.push_back(start);
 
@@ -41,17 +43,17 @@ public:
         return std::vector<int>{-1}; // If no path found between start and end, return -1
     }
 
-    int isContainsCycle(Graph g){
+    static int isContainsCycle(const Graph &g){
         int numVertices = g.getNumVertices();
         std::vector<int> dist(numVertices, std::numeric_limits<int>::max()); // Initialize distances to infinity
         std::vector<int> prev(numVertices, -1);   // Store predecessors
 
         // Relax all edges repeatedly
-        for (int i = 0; i < numVertices - 1; ++i) {
-            for (int u = 0; u < numVertices; ++u) {
-                for (int v = 0; v < numVertices; ++v) {
-                    if (g.getAdjMatrix()[u][v] != 0) { // Check if there is an edge
-                        if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
+        for (int i = 0; i < numVertices - 1; ++i){
+            for (int u = 0; u < numVertices; ++u){
+                for (int v = 0; v < numVertices; ++v){
+                    if (g.getAdjMatrix()[u][v] != 0){ // Check if there is an edge
+                        if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]){
                             dist[v] = dist[u] + g.getAdjMatrix()[u][v];
                             prev[v] = u;
                         }
@@ -89,7 +91,7 @@ public:
         }
     }
 
-    void isBipartite(Graph g){
+    static void isBipartite(const Graph &g){
         // If there is a cycle in the graph -> it can't be a bipartite graph
         if( isContainsCycle(g) != 0){
             std::cout<<"0"<<std::endl;
@@ -106,28 +108,29 @@ public:
                 A.push_back(i); // Add the first vertex to group A
                 Q.push(i);
                 
-                 while (!Q.empty()) {
-                int curr = Q.front();
-                Q.pop();
+                while (!Q.empty()) {
+                    int curr = Q.front();
+                    Q.pop();
 
-                for (int neighbor = 0; neighbor < numVer; ++neighbor) {
-                    if (g.getAdjMatrix()[curr][neighbor] == 1) {
-                        if (colors[neighbor] == UNCOLORED) {
-                            colors[neighbor] = (colors[curr] == BLACK) ? WHITE : BLACK; // Alternate between group A (black) and group B (white)
-                            Q.push(neighbor);
-                            if (colors[neighbor] == BLACK) {
-                                A.push_back(neighbor);
-                            } else {
-                                B.push_back(neighbor);
+                    for (int neighbor = 0; neighbor < numVer; ++neighbor) {
+                        if (g.getAdjMatrix()[curr][neighbor] == 1) {
+                            if (colors[neighbor] == UNCOLORED) {
+                                colors[neighbor] = (colors[curr] == BLACK) ? WHITE : BLACK; // Alternate between group A (black) and group B (white)
+                                Q.push(neighbor);
+                                if (colors[neighbor] == BLACK) {
+                                    A.push_back(neighbor);
+                                } else {
+                                    B.push_back(neighbor);
+                                }
+                            } else if (colors[neighbor] == colors[curr]) {
+                                std::cout << "0" << std::endl;
+                                return; // Graph is not bipartite
                             }
-                        } else if (colors[neighbor] == colors[curr]) {
-                            std::cout << "0" << std::endl;
-                            return; // Graph is not bipartite
                         }
                     }
                 }
             }
-        }
+        }   
         std::cout << "The graph is bipartite: A={";
         for(int i=0; i<A.size()-1; i++){
             std::cout << A[i]<<", ";
@@ -140,7 +143,7 @@ public:
         return; // Graph is bipartite
     }
 
-    std::vector<int> negativeCycle(Graph g){  
+    static std::vector<int> negativeCycle(Graph &g){  
         // If there is no cycle in the graph -> there is no reason to continue. So print "0"
         if( isContainsCycle(g) == 0){
             std::cout<<"0"<<std::endl;
@@ -184,7 +187,7 @@ public:
                         for(int i=0; i<cycle.size()-1; i++){
                             std::cout<<cycle[i]<<"->"<<std::endl;
                         }
-                        std::cout<<cycle[size()+1]<<std::endl;
+                        std::cout<<cycle[cycle.size()+1]<<std::endl;
                         return cycle;
                     }
                 }
@@ -195,12 +198,11 @@ public:
         return std::vector<int>(); // No negative cycle found
         
     }
-}
 
-// Here are all the auxiliary functions
-private: 
+    //---------------------------Here are all the auxiliary functions---------------------------
+
     // Depth-first search (DFS)
-    void dfs(Graph g, int v, std::vector<bool>& visited) {
+    static void dfs(Graph &g, int v, std::vector<bool>& visited) {
         visited[v] = true; // Sign that we run over this vertice
         for (int i = 0; i < v; i++) {
             if (g.getAdjMatrix()[v][i] && !visited[i]) { // Run over all tha existing paths from this vertex
@@ -209,7 +211,7 @@ private:
         }
     }
 
-    std::vector<int> dijkstra(const Graph& g, int start, int end) {
+    static std::vector<int> dijkstra(const Graph& g, int start, int end) {
         int n = g.getNumVertices();
         std::vector<int> dist(n, std::numeric_limits<int>::max()); // Initialize distances to infinity
         std::vector<int> prev(n, -1); // Store the previous vertex on the shortest path
@@ -235,7 +237,9 @@ private:
                 }
             }
             
-            if (u == end) break; // Stop once the shortest path to the end vertex is found
+            if (u == end) {
+                break; // Stop once the shortest path to the end vertex is found
+            }
         }
 
         // Reconstruct the shortest path
@@ -247,6 +251,7 @@ private:
 
         return path;
     }
+    
 };
 
 
