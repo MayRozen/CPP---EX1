@@ -8,7 +8,7 @@
 
 #include "Graph.hpp"
 #include "Algorithms.hpp"
-using ariel::Algorithms;
+using namespace Algorithms;
 using ariel::Graph;
 
 #include <iostream>
