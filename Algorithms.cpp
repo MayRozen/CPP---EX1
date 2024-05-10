@@ -12,8 +12,9 @@
 enum Color { UNCOLORED, WHITE, BLACK };
 using namespace ariel;
 
-void dfs(Graph &g, int v, std::vector<bool>& visited);
-std::vector<int> dijkstra(const Graph& g, int start, int end);
+
+static void dfs(Graph &g, int v, std::vector<bool>& visited);
+static std::vector<int> dijkstra(const Graph& g, int start, int end);
 namespace Algorithms{
     static bool isConnected(Graph &g){
         int size = g.getAdjMatrix().size();
@@ -91,11 +92,11 @@ namespace Algorithms{
         }
     }
 
-    static void isBipartite(const Graph &g){
+    static int isBipartite(const Graph &g){
         // If there is a cycle in the graph -> it can't be a bipartite graph
         if( isContainsCycle(g) != 0){
             std::cout<<"0"<<std::endl;
-            return;
+            return 0;
         }
 
         int numVer = g.getNumVertices();
@@ -124,7 +125,7 @@ namespace Algorithms{
                                 }
                             } else if (colors[neighbor] == colors[curr]) {
                                 std::cout << "0" << std::endl;
-                                return; // Graph is not bipartite
+                                return 0; // Graph is not bipartite
                             }
                         }
                     }
@@ -140,10 +141,10 @@ namespace Algorithms{
             std::cout << B[i];
         }
         std::cout << B[B.size()-1]<<"}."<<std::endl; // The last vertex
-        return; // Graph is bipartite
+        return 1; // Graph is bipartite
     }
 
-    static std::vector<int> negativeCycle(Graph &g){  
+    static std::vector<int> negativeCycle(const Graph &g){  
         // If there is no cycle in the graph -> there is no reason to continue. So print "0"
         if( isContainsCycle(g) == 0){
             std::cout<<"0"<<std::endl;
