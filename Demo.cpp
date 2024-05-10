@@ -11,8 +11,8 @@
 #include <vector>
 using namespace std;
 
-using namespace Algorithms;
-using ariel::Graph;
+// using namespace Algorithms;
+// using ariel::Graph;
 #include "Graph.hpp"
 #include "Algorithms.hpp"
 
