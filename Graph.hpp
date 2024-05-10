@@ -15,13 +15,22 @@ namespace ariel {
         std::vector<std::vector<int>> adjMatrix;
 
     public:
-
         // Constructor taking the number of vertices
         Graph() : numVertices(), adjMatrix(0, std::vector<int>(0, 0)) {} // empty graph
 
         // Constructor taking the adjacency matrix
         Graph(const std::vector<std::vector<int>>& Mat) : adjMatrix(Mat) {
-            numVertices = Mat.size();
+            this->numVertices = Mat.size();
+        }
+
+        // Operator[] overload to access elements of the adjacency matrix
+        std::vector<int>& operator[](size_t i) {
+            return this->adjMatrix[i];
+        }
+
+        // Const version of operator[] for accessing const instances
+        const std::vector<int>& operator[](size_t i) const {
+            return this->adjMatrix[i];
         }
 
         int getNumVertices() const;
