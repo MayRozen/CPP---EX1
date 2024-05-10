@@ -27,9 +27,9 @@ void Graph::loadGraph(const std::vector<std::vector<int>>& adjMat) {
 }
 
 void Graph::printGraph() {
-    int edges = 0;
-    for (int i = 0; i < numVertices; ++i) {
-        for (int j = 0; j < numVertices; ++j) {
+    std::vector<std::vector<int>>::size_type edges = 0;
+    for (std::vector<int>::size_type i = 0; i < numVertices; ++i) {
+        for (std::vector<int>::size_type j = 0; j < numVertices; ++j) {
             if(adjMatrix[i][j]!=0){ // Assuming the lack of an edge is expressed by 0
                 edges++;
             }
