@@ -18,9 +18,10 @@ namespace Algorithms{ // our namespace
     static int isContainsCycle(const Graph &g);
 
     // return the partition of the graph in a bipartite graph. else -> print that there is no negative circle
-    static void isBipartite(const Graph &g);
+    // 0 if fail, 1 if success.
+    static int isBipartite(const Graph &g);
 
     // return a vector which include the Vertices of a negative circle if exist. If not -> return 0.
-    static std::vector<int> negativeCycle(Graph &g);
+    static std::vector<int> negativeCycle(const Graph &g);
 };
     
