@@ -16,8 +16,10 @@ namespace ariel {
         std::vector<std::vector<int>> adjMatrix;
 
     public:
+        // Constructor taking the number of vertices
         Graph() : numVertices(), adjMatrix(0, std::vector<int>(0, 0)) {} // empty graph
 
+        // Constructor taking the adjacency matrix
         // Constructor taking the adjacency matrix
         Graph(const std::vector<std::vector<int>>& Mat) : adjMatrix(Mat) {
             this->numVertices = Mat.size();
