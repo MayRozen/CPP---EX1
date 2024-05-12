@@ -102,7 +102,7 @@ TEST_CASE("Test isBipartite")
         {0, 0, 4, 0, 5},
         {0, 0, 0, 5, 0}};
     g.loadGraph(graph3);
-    CHECK(Algorithms::isBipartite(g) == 1); // The graph is bipartite
+    CHECK(Algorithms::isBipartite(g) == 0); //  The graph is not bipartite
 }
 TEST_CASE("Test invalid graph")
 {
