@@ -11,53 +11,58 @@
 #include "Algorithms.hpp"
 enum Color { UNCOLORED, WHITE, BLACK };
 using namespace ariel;
-
-
-static void dfs(Graph &g, int v, std::vector<bool>& visited);
-static std::vector<int> dijkstra(const Graph& g, int start, int end);
 namespace Algorithms{
+
+    static void dfs(Graph &g, IndexType v, std::vector<bool>& visited);
+    static std::vector<int> dijkstra(const Graph& g, IndexType start, IndexType end);
+    void printShortest(std::vector<int> shortest);
+
     bool isConnected(Graph &g){
-        auto size = g.getAdjMatrix().size();
+        size_t size = g.getAdjMatrix().size();
         std::vector<bool> visited(size, false); // This array will tell us whether we run over all the vertices or not
             
         dfs(g, 0, visited); // Perform DFS traversal from the first vertex
         
         for (bool v : visited) { // Check if all vertices were visited
             if (!v) {
+                std::cout << "0" << std::endl;
                 return false; // Graph is not connected
             }
         }
 
+        std::cout << "1" << std::endl;
         return true; // if 'false' were not return -> Graph is connected
     }
 
-    std::vector<int> shortestPath(const Graph &g,int start,int end){
+    std::vector<int> shortestPath(const Graph &g,IndexType start,IndexType end){
         std::vector<int> shortest; // First of all, our vector includes only one vertex -> start
         shortest.push_back(start);
 
         if (start == end) {
+            printShortest(shortest);
             return shortest;
         }
 
         shortest = dijkstra(g, start, end);
-
+        
+        std::cout<<"-1"<<std::endl;
         return std::vector<int>{-1}; // If no path found between start and end, return -1
     }
 
     int isContainsCycle(const Graph &g){
         auto numVertices = g.getNumVertices();
-        std::vector<int> dist(static_cast<std::vector<int>::size_type>(numVertices), std::numeric_limits<int>::max());
-        std::vector<int> prev(static_cast<std::vector<int>::size_type>(numVertices), -1);
+        std::vector<int> dist(static_cast<IndexType>(numVertices), std::numeric_limits<int>::max());
+        std::vector<int> prev(static_cast<IndexType>(numVertices), -1);
 
         // Relax all edges repeatedly
-        for (int i = 0; i < numVertices - 1; ++i){
-            for (int u = 0; u < numVertices; ++u){
-                for (int v = 0; v < numVertices; ++v){
+        for (IndexType i = 0; i < numVertices - 1; ++i){
+            for (IndexType u = 0; u < numVertices; ++u){
+                for (IndexType v = 0; v < numVertices; ++v){
                     // Check if there is an edge
-                    if (g.getAdjMatrix()[static_cast<std::vector<int>::size_type>(u)][static_cast<std::vector<int>::size_type>(v)] != 0){
-                        if (dist[u] + g.getAdjMatrix()[static_cast<size_t>(u)][static_cast<size_t>(v)] < dist[static_cast<size_t>(v)]){
+                    if (g.getAdjMatrix()[static_cast<IndexType>(u)][static_cast<IndexType>(v)] != 0){
+                        if (dist[static_cast<size_t>(u)] + g.getAdjMatrix()[u][v] < dist[static_cast<size_t>(v)]){
                             dist[static_cast<size_t>(v)] = dist[u] + g.getAdjMatrix()[static_cast<size_t>(u)][static_cast<size_t>(v)];
-                            prev[static_cast<std::vector<int>::size_type>(v)] = static_cast<int>(u);
+                            prev[static_cast<IndexType>(v)] = static_cast<int>(u);
                         }
                     }
                 }
@@ -66,24 +71,24 @@ namespace Algorithms{
 
         int print = 0;
         // Check for negative cycles
-        for (int u = 0; u < numVertices; ++u) {
-            for (int v = 0; v < numVertices; ++v) {
+        for (IndexType u = 0; u < numVertices; ++u) {
+            for (IndexType v = 0; v < numVertices; ++v) {
                 // Check if there is an edge
-                if (g.getAdjMatrix()[static_cast<std::vector<int>::size_type>(u)][static_cast<std::vector<int>::size_type>(v)] != 0){
-                    if (dist[u] + g.getAdjMatrix()[u][v] < dist[static_cast<size_t>(v)]){
+                if (g.getAdjMatrix()[static_cast<IndexType>(u)][static_cast<IndexType>(v)] != 0){
+                    if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]){
                         // Negative cycle found, print it
                         std::cout << "Negative cycle found: ";
                         int vertex = v;
                         for (int i = 0; i < numVertices; ++i) {
-                            vertex = prev[static_cast<std::vector<int>::size_type>(vertex)];
+                            vertex = prev[static_cast<IndexType>(vertex)];
                         }
                         int startVertex = vertex;
                         do {
                             std::cout << vertex << " ";
-                            vertex = prev[static_cast<std::vector<int>::size_type>(vertex)];
+                            vertex = prev[static_cast<IndexType>(vertex)];
                         } while (vertex != startVertex);
                         std::cout << startVertex << std::endl;
-                        return;
+                        return 0; //Exit
                     }
                 }
             }
@@ -92,6 +97,7 @@ namespace Algorithms{
             std::cout<<"There is no negative cycle"<<std::endl; // No negative cycle found
             return 0;
         }
+        return 1;
     }
 
     int isBipartite(const Graph &g){
@@ -105,17 +111,17 @@ namespace Algorithms{
         std::vector<int> A, B; // Vertices of group A and group B
         std::queue<int> Q; // Queue for BFS traversal 
         std::vector<Color> colors(static_cast<std::vector<Color>::size_type>(numVer), UNCOLORED); // First of all, all the vertices are uncolored
-        for (int i = 0; i < numVer; ++i) { // Start BFS traversal from each uncolored vertex
+        for (IndexType i = 0; i < numVer; ++i) { // Start BFS traversal from each uncolored vertex
             if (colors[static_cast<size_t>(i)] == UNCOLORED){ // Every vertice we pass on will be printed BLACK
                 colors[static_cast<std::vector<Color>::size_type>(i)] = BLACK;
                 A.push_back(i); // Add the first vertex to group A
                 Q.push(i);
                 
                 while (!Q.empty()) {
-                    int curr = Q.front();
+                    IndexType curr = (IndexType)Q.front();
                     Q.pop();
 
-                    for (int neighbor = 0; neighbor < numVer; ++neighbor) {
+                    for (IndexType neighbor = 0; neighbor < numVer; ++neighbor) {
                         if (g.getAdjMatrix()[curr][neighbor] == 1) {
                             if (colors[static_cast<size_t>(neighbor)] == UNCOLORED) {
                                colors[static_cast<size_t>(neighbor)] = (colors[curr] == BLACK) ? WHITE : BLACK; // Alternate between group A (black) and group B (white)
@@ -135,20 +141,20 @@ namespace Algorithms{
             }
         }   
         std::cout << "The graph is bipartite: A={";
-        for(int i=0; i<A.size()-1; i++){
+        for(IndexType i=0; i<A.size()-1; i++){
             std::cout << A[static_cast<size_t>(i)] << ", ";
         }
         std::cout << A[A.size()-1]<<"}, B={"; // The last vertex
-        for(int i=0; i<B.size(); i++){
+        for(IndexType i=0; i<B.size(); i++){
             std::cout << B[static_cast<size_t>(i)];
         }
         std::cout << B[B.size()-1]<<"}."<<std::endl; // The last vertex
         return 1; // Graph is bipartite
     }
 
-   std::vector<int> negativeCycle(const Graph &g){  
+    std::vector<int> negativeCycle(const Graph &g){  
         // If there is no cycle in the graph -> there is no reason to continue. So print "0"
-        if( isContainsCycle(g) == 0){
+        if(isContainsCycle(g) == 0){
             std::cout<<"0"<<std::endl;
             return std::vector<int>(); // Return an empty vector if no negative cycle found
         }
@@ -159,14 +165,14 @@ namespace Algorithms{
         // Intialize the distance and π(v) of the starting vertex
         std::vector<int> dist(static_cast<size_t>(numVertices), std::numeric_limits<int>::max());
         // Initialize distances to infinity
-        std::vector<int> prev(numVertices, -1);   // Store predecessors
+        std::vector<int> prev(static_cast<size_t>(numVertices), -1); // Store predecessors
 
         // Relax all edges repeatedly
-        for (int i = 0; i < numVertices - 1; i++) {
-            for (int u = 0; u < numVertices; u++) {
-                for (int v = 0; v < numVertices; v++) {
-                    if ((g.getAdjMatrix()[u][v] != 0)&&(dist[u] + g.getAdjMatrix()[u][v] < dist[v])) { // Check if there is an edge
-                            dist[v] = dist[u] + g.getAdjMatrix()[u][v];
+        for (IndexType i = 0; i < numVertices - 1; i++) {
+            for (IndexType u = 0; u < numVertices; u++) {
+                for (IndexType v = 0; v < numVertices; v++) {
+                    if ((g[u][v] != 0) && (dist[u] + g[u][v] < dist[v])){ // Check if there is an edge
+                            dist[v] = dist[u] + g[u][v];
                             prev[v] = u;
                     }
                         
@@ -175,20 +181,20 @@ namespace Algorithms{
         }
 
         // Check for negative cycles
-        for (int u = 0; u < numVertices; ++u) {
-            for (int v = 0; v < numVertices; ++v) {
+        for (IndexType u = 0; u < numVertices; ++u) {
+            for (IndexType v = 0; v < numVertices; ++v) {
                 if (g.getAdjMatrix()[u][v] != 0) { // Check if there is an edge
                     if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
                         // Negative cycle found, construct the cycle and return it
                         std::vector<int> cycle;
-                        int vertex = v;
+                        IndexType vertex = v;
                         do {
                             cycle.push_back(vertex);
-                            vertex = prev[vertex];
+                            vertex = (IndexType)prev[vertex];
                         } while (vertex != v);
 
                         std::cout<<"The cycle is: "<<std::endl;
-                        for(int i=0; i<cycle.size()-1; i++){
+                        for(IndexType i=0; i<cycle.size()-1; i++){
                             std::cout<<cycle[i]<<"->"<<std::endl;
                         }
                         std::cout<<cycle[cycle.size()+1]<<std::endl;
@@ -206,19 +212,19 @@ namespace Algorithms{
     //---------------------------Here are all the auxiliary functions---------------------------
 
     // Depth-first search (DFS)
-    static void dfs(Graph &g, int v, std::vector<bool>& visited) {
+    static void dfs(Graph &g, IndexType v, std::vector<bool>& visited) {
         visited[v] = true; // Sign that we run over this vertice
-        for (int i = 0; i < v; i++) {
+        for (IndexType i = 0; i < v; i++) {
             if (g.getAdjMatrix()[v][i] && !visited[i]) { // Run over all tha existing paths from this vertex
                 dfs(g, i, visited); // Recursion = depth
             }
         }
     }
 
-    static std::vector<int> dijkstra(const Graph& g, int start, int end) {
-        int n = g.getNumVertices();
-        std::vector<int> dist(n, std::numeric_limits<int>::max()); // Initialize distances to infinity
-        std::vector<int> prev(n, -1); // Store the previous vertex on the shortest path
+    static std::vector<int> dijkstra(const Graph& g, IndexType start, IndexType end) {
+        IndexType n = (IndexType)g.getNumVertices();
+        std::vector<IndexType> dist(n, std::numeric_limits<int>::max()); // Initialize distances to infinity
+        std::vector<IndexType> prev(n, (IndexType)-1); // Store the previous vertex on the shortest path
         std::priority_queue<std::pair<int, int>,
                 std::vector<std::pair<int, int>>,
                 std::less<std::pair<int, int>>> pq;
@@ -227,12 +233,12 @@ namespace Algorithms{
         pq.push({0, start});
 
         while (!pq.empty()) {
-            int u = pq.top().second;
+            IndexType u = (IndexType)pq.top().second;
             pq.pop();
 
-            for (int v = 0; v < n; ++v) {
+            for (IndexType v = 0; v < n; ++v) {
                 if (g.getAdjMatrix()[u][v] && dist[u] != std::numeric_limits<int>::max()) {
-                    int newDist = dist[u] + g.getAdjMatrix()[u][v];
+                    IndexType newDist = dist[u] + (IndexType)g.getAdjMatrix()[u][v];
                     if (newDist < dist[v]) {
                         dist[v] = newDist;
                         prev[v] = u; // Update previous vertex
@@ -248,12 +254,20 @@ namespace Algorithms{
 
         // Reconstruct the shortest path
         std::vector<int> path;
-        for (int v = end; v != -1; v = prev[v]) {
+        for (IndexType v = end; v !=(IndexType) -1; v = (IndexType)prev[v]) {
             path.push_back(v);
         }
         std::reverse(path.begin(), path.end());
 
         return path;
+    }
+
+    void printShortest(std::vector<int> shortest){
+        for(IndexType i=0; i<shortest.size()-1; i++){
+            std::cout<<shortest[i]<<std::endl;
+            std::cout<<"->"<<std::endl;
+        }
+        std::cout<<shortest[shortest.size()-1]<<std::endl;
     }
     
 };
