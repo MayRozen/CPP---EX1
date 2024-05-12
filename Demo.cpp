@@ -13,8 +13,7 @@ using namespace std;
 #include "Graph.hpp"
 #include "Algorithms.hpp"
 
-int main()
-{
+int main(){
     Graph g;
     // 3x3 matrix that represents a connected graph.
     vector<vector<int>> graph = {
