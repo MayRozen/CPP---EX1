@@ -44,7 +44,7 @@ TEST_CASE("Test shortestPath")
         {1, 0, 1},
         {0, 1, 0}};
     g.loadGraph(graph);
-    vector<int> ans = {0,1,2};
+    vector<int> ans = {0,1,2}; // Chcking if we get the shortest path we expect to
     CHECK(Algorithms::shortestPath(g, 0, 2) == ans);
 
     vector<vector<int>> graph2 = {
@@ -54,7 +54,7 @@ TEST_CASE("Test shortestPath")
         {0, 0, 1, 0, 0},
         {0, 0, 0, 0, 0}};
     g.loadGraph(graph2);
-    vector<int> ans2 = {-1};
+    vector<int> ans2 = {-1}; // Checking what will happen if there is *no* shortest path
     CHECK(Algorithms::shortestPath(g, 0, 4) == ans2);
 }
 TEST_CASE("Test isContainsCycle")
@@ -65,7 +65,7 @@ TEST_CASE("Test isContainsCycle")
         {1, 0, 1},
         {0, 1, 0}};
     g.loadGraph(graph);
-    CHECK(Algorithms::isContainsCycle(g) == false);
+    CHECK(Algorithms::isContainsCycle(g) == 0); // There is no cycle
 
     vector<vector<int>> graph2 = {
         {0, 1, 1, 0, 0},
@@ -74,7 +74,7 @@ TEST_CASE("Test isContainsCycle")
         {0, 0, 1, 0, 0},
         {0, 0, 0, 0, 0}};
     g.loadGraph(graph2);
-    CHECK(Algorithms::isContainsCycle(g) == true);
+    CHECK(Algorithms::isContainsCycle(g) == 1); // There is a cycle
 }
 TEST_CASE("Test isBipartite")
 {
@@ -84,7 +84,7 @@ TEST_CASE("Test isBipartite")
         {1, 0, 1},
         {0, 1, 0}};
     g.loadGraph(graph);
-    CHECK(Algorithms::isBipartite(g) == 1);
+    CHECK(Algorithms::isBipartite(g) == 1); // The graph is bipartite
 
     vector<vector<int>> graph2 = {
         {0, 1, 1, 0, 0},
@@ -93,7 +93,7 @@ TEST_CASE("Test isBipartite")
         {0, 0, 1, 0, 0},
         {0, 0, 0, 0, 0}};
     g.loadGraph(graph2);
-    CHECK(Algorithms::isBipartite(g) == 0);
+    CHECK(Algorithms::isBipartite(g) == 0); // The graph is not bipartite
 
     vector<vector<int>> graph3 = {
         {0, 1, 2, 0, 0},
@@ -102,7 +102,7 @@ TEST_CASE("Test isBipartite")
         {0, 0, 4, 0, 5},
         {0, 0, 0, 5, 0}};
     g.loadGraph(graph3);
-    CHECK(Algorithms::isBipartite(g) == 1);
+    CHECK(Algorithms::isBipartite(g) == 1); // The graph is bipartite
 }
 TEST_CASE("Test invalid graph")
 {
@@ -115,10 +115,10 @@ TEST_CASE("Test invalid graph")
         {0, 0, 0, 5}};
     CHECK_THROWS(g.loadGraph(graph));
 
-    vector<vector<int>> graph2 = {{0}};
+    vector<vector<int>> graph2 = {{0}}; // Edge case
     CHECK_THROWS(g.loadGraph(graph));
 
-    vector<vector<int>> graph3 = {};
+    vector<vector<int>> graph3 = {}; // Edge case
     CHECK_THROWS(g.loadGraph(graph));
 }
 
@@ -133,14 +133,14 @@ TEST_CASE("Test invalid graph")
         {0, 0, 0, 5}};
     CHECK_THROWS(g.loadGraph(graph));
 
-    vector<vector<int>> graph2 = {{0}};
+    vector<vector<int>> graph2 = {{0}}; // Edge case
     CHECK_THROWS(g.loadGraph(graph));
 
-    vector<vector<int>> graph3 = {};
+    vector<vector<int>> graph3 = {}; // Edge case
     CHECK_THROWS(g.loadGraph(graph));
 }
 
-TEST_CASE("Test negativeCycle")
+TEST_CASE("Test negativeCycle")  // Checking the method - 'negativeCycle'
 {
     Graph g;
     vector<vector<int>> graph = {
@@ -154,7 +154,7 @@ TEST_CASE("Test negativeCycle")
 
 }
 
-TEST_CASE("Test large graph")
+TEST_CASE("Test large graph") // Testing our algorithms about a large graph
 {
     Graph g;
     // Create a large graph with 100 vertices and edges connecting every pair of vertices
@@ -176,7 +176,7 @@ TEST_CASE("Test large graph")
         expectedPath.push_back(i);
     }
 
-    vector<int> shortestPath = Algorithms::shortestPath(g, 0, numVertices - 1);
+    vector<int> shortestPath = Algorithms::shortestPath(g, 0, numVertices - 1); // The shortestpath is between 0-99.
     CHECK(shortestPath == expectedPath);
 }
 
@@ -191,7 +191,7 @@ TEST_CASE("Test disconnected graph")
         {0, 0, 1, 0, 0},
         {0, 0, 0, 0, 0}};
     g.loadGraph(disconnectedGraph);
-    CHECK(Algorithms::isConnected(g) == false);
+    CHECK(Algorithms::isConnected(g) == false); // Checking if we get false
 }
 
 TEST_CASE("Test directed graph")
@@ -202,7 +202,7 @@ TEST_CASE("Test directed graph")
         {0, 1, 0},
         {0, 0, 1},
         {0, 0, 0}};
-    g.loadGraph(directedGraph);
+    g.loadGraph(directedGraph); // Checking if loadGraph working as we expect
 }
 
 TEST_CASE("Test weighted graph")
@@ -227,7 +227,7 @@ TEST_CASE("Test unweighted graph")
     g.loadGraph(unweightedGraph);
 }
 
-TEST_CASE("Test invalid graph input")
+TEST_CASE("Test invalid graph input") // Checking with negative valuse
 {
     Graph g;
     vector<vector<int>> invalidGraph = {
