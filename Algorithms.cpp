@@ -62,7 +62,7 @@ namespace Algorithms{
         int hasCycle = 0;
 
         // Relax all edges repeatedly
-        for (IndexType i = 0; i < numVertices-1; ++i) {
+        for (IndexType i = 0; i < numVertices - 1; ++i) {
             for (IndexType u = 0; u < numVertices; ++u) {
                 for (IndexType v = 0; v < numVertices; ++v) {
                     // Check if there is an edge
@@ -76,20 +76,20 @@ namespace Algorithms{
             }
         }
 
-        std::vector<int> cycle;
-
         // Check for cycles
         for (IndexType u = 0; u < numVertices; ++u) {
             for (IndexType v = 0; v < numVertices; ++v) {
                 // Check if there is an edge
-                if (g.getAdjMatrix()[u][v] != 0) {
-                    if (dist[u] + g.getAdjMatrix()[u][v] > dist[v]) {
+                if (g.getAdjMatrix()[static_cast<IndexType>(u)][static_cast<IndexType>(v)] != 0) {
+                    if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
                         // Cycle found
+                        std::cout<<"The cycle is: ";
                         int vertex = v;
                         do {
-                           cycle.push_back(vertex); // In to cycle the vertices
-                           vertex = prev[static_cast<IndexType>(vertex)];
-                        } while ((vertex != v) && (vertex != (IndexType)g.getAdjMatrix().size()));
+                            std::cout << vertex << "->";
+                            vertex = prev[static_cast<IndexType>(vertex)];
+                        } while (vertex != v); // Go back to all the vertices which in the cycle
+                        std::cout<<v<<std::endl;
                         hasCycle = 1;
                     }
                 }
@@ -98,20 +98,9 @@ namespace Algorithms{
 
         if (!hasCycle) {
             std::cout<<"0"<<std::endl; //Print if no cycle found
-            return 0;
         }
-        else{
-            if(cycle[0]==cycle[1]){
-                std::cout<<"0"<<std::endl;
-                return 0;
-            }
-            std::cout<<"The cycle is: ";
-            for(IndexType i=0; i<cycle.size(); i++){
-                std::cout << cycle[i] << "->";
-            }
-            std::cout << cycle[0]<<std::endl;
-            return 1;
-        }
+        
+        return hasCycle; //Return whether a cycle is found
     }
 
     int isBipartite(const Graph &g){
