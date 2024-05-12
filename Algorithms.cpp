@@ -54,54 +54,63 @@ namespace Algorithms{
         return shortest;
     }
 
-    int isContainsCycle(const Graph &g) {
-        auto numVertices = g.getNumVertices();
-        std::vector<int> dist(static_cast<IndexType>(numVertices), std::numeric_limits<int>::max());
-        std::vector<int> prev(static_cast<IndexType>(numVertices), -1);
+    bool DFSCycle(const Graph &g, IndexType v, std::vector<bool> &visited, std::vector<int> &prev, std::deque<int> &cycle) {
+        visited[v] = true;
+        cycle.push_back(v);
 
-        int hasCycle = 0;
+        const auto& matrix = g.getAdjMatrix();
+        const IndexType numVertices = (IndexType)g.getNumVertices();
 
-        // Relax all edges repeatedly
-        for (IndexType i = 0; i < numVertices - 1; ++i) {
-            for (IndexType u = 0; u < numVertices; ++u) {
-                for (IndexType v = 0; v < numVertices; ++v) {
-                    // Check if there is an edge
-                    if (g.getAdjMatrix()[static_cast<IndexType>(u)][static_cast<IndexType>(v)] != 0) {
-                        if (dist[static_cast<size_t>(u)] + g.getAdjMatrix()[u][v] < dist[static_cast<size_t>(v)]) {
-                            dist[static_cast<size_t>(v)] = dist[u] + g.getAdjMatrix()[static_cast<size_t>(u)][static_cast<size_t>(v)];
-                            prev[static_cast<IndexType>(v)] = static_cast<int>(u);
-                        }
-                    }
-                }
-            }
-        }
+        std::vector<int> ans;
 
-        // Check for cycles
         for (IndexType u = 0; u < numVertices; ++u) {
-            for (IndexType v = 0; v < numVertices; ++v) {
-                // Check if there is an edge
-                if (g.getAdjMatrix()[static_cast<IndexType>(u)][static_cast<IndexType>(v)] != 0) {
-                    if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
-                        // Cycle found
-                        std::cout<<"The cycle is: ";
-                        int vertex = v;
-                        do {
-                            std::cout << vertex << "->";
-                            vertex = prev[static_cast<IndexType>(vertex)];
-                        } while (vertex != v); // Go back to all the vertices which in the cycle
-                        std::cout<<v<<std::endl;
-                        hasCycle = 1;
+            if (matrix[v][u] != 0) {
+                if (!visited[u]) {
+                    prev[u] = v;
+                    if (DFSCycle(g, u, visited, prev, cycle)) {
+                        return true;
                     }
+                } else if (prev[v] != u) {
+                    std::cout << "The cycle is: ";
+                    IndexType vertex = v;
+                    ans.push_back(vertex);
+                    do {
+                        vertex = (IndexType)prev[vertex];
+                        ans.push_back(vertex);
+                    } while (vertex != u);
+                    for(IndexType j=ans.size()-1; j>0 ;j--){
+                        std::cout<<ans[j];
+                        std::cout<<"->";
+                    }
+                    std::cout << ans[0];
+                    std::cout<<"->";
+                    std::cout<<ans[ans.size()-1]<<std::endl;
+
+                    return true;
                 }
             }
         }
 
-        if (!hasCycle) {
-            std::cout<<"0"<<std::endl; //Print if no cycle found
-        }
-        
-        return hasCycle; //Return whether a cycle is found
+        cycle.pop_back();
+        return false;
     }
+
+    int isContainsCycle(const Graph &g) {
+        const IndexType numVertices = (IndexType)g.getNumVertices();
+        std::vector<bool> visited(numVertices, false);
+        std::vector<int> prev(numVertices, -1);
+        std::deque<int> cycle;
+
+        for (IndexType i = 0; i < numVertices; ++i) {
+            if (!visited[i] && DFSCycle(g, i, visited, prev, cycle)) {
+                return true;
+            }
+        }
+
+        std::cout << "0" << std::endl;
+        return false;
+    }
+
 
     int isBipartite(const Graph &g){
         // If there is a cycle in the graph -> it can't be a bipartite graph
@@ -273,5 +282,4 @@ namespace Algorithms{
     }
     
 };
-
 
