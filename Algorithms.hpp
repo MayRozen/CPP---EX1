@@ -8,11 +8,13 @@
 
 using namespace ariel;
 namespace Algorithms{ // our namespace
+    using IndexType = typename std::vector<int>::size_type; // Define a type alias for vector index type
+
     // return 1 if the graph is a 'connected graph' and 0 else
     bool isConnected(Graph &g);
 
     // return the shortest path between 'start' ans 'end', else -> -1.
-    std::vector<int> shortestPath(const Graph &g,int start,int end);
+    std::vector<int> shortestPath(const Graph &g,IndexType start,IndexType end);
 
     // Prints a circle if exist, 0 else
     int isContainsCycle(const Graph &g);
