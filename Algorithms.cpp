@@ -55,16 +55,14 @@ namespace Algorithms{
     }
 
     int isContainsCycle(const Graph &g) {
-        auto numVertices = g.getNumVertices();
+        int numVertices = g.getNumVertices();
         std::vector<int> dist(static_cast<IndexType>(numVertices), std::numeric_limits<int>::max());
         std::vector<int> prev(static_cast<IndexType>(numVertices), -1);
 
-        int hasCycle = 0;
-
         // Relax all edges repeatedly
-        for (IndexType i = 0; i < numVertices - 1; ++i) {
-            for (IndexType u = 0; u < numVertices; ++u) {
-                for (IndexType v = 0; v < numVertices; ++v) {
+        for (IndexType i = 0; i < numVertices; i++) {
+            for (IndexType u = 0; u < numVertices; u++) {
+                for (IndexType v = 0; v < numVertices; v++) {
                     // Check if there is an edge
                     if (g.getAdjMatrix()[static_cast<IndexType>(u)][static_cast<IndexType>(v)] != 0) {
                         if (dist[static_cast<size_t>(u)] + g.getAdjMatrix()[u][v] < dist[static_cast<size_t>(v)]) {
@@ -77,36 +75,32 @@ namespace Algorithms{
         }
 
         // Check for cycles
-        for (IndexType u = 0; u < numVertices; ++u) {
-            for (IndexType v = 0; v < numVertices; ++v) {
+        for (IndexType u = 0; u < numVertices; u++) {
+            for (IndexType v = 0; v < numVertices; v++) {
                 // Check if there is an edge
-                if (g.getAdjMatrix()[static_cast<IndexType>(u)][static_cast<IndexType>(v)] != 0) {
-                    if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
+                if (g.getAdjMatrix()[u][v] != 0) { // There is an edge
+                    if (dist[u] + g.getAdjMatrix()[u][v] > dist[v]) { // We want a positive cycle
                         // Cycle found
-                        std::cout<<"The cycle is: ";
+                        std::cout << "The cycle is: ";
                         int vertex = v;
                         do {
                             std::cout << vertex << "->";
-                            vertex = prev[static_cast<IndexType>(vertex)];
+                            vertex = static_cast<IndexType>(vertex); // Update vertex to its previous
                         } while (vertex != v);
-                        std::cout<<v<<std::endl;
-                        hasCycle = 1;
+                        std::cout << v << std::endl; // The last vertex
+                        return 1; // Return immediately after finding a cycle
                     }
                 }
             }
         }
 
-        if (!hasCycle) {
-            std::cout<<"0"<<std::endl; //Print if no cycle found
-        }
-        
-        return hasCycle; //Return whether a cycle is found
+        std::cout << "0" << std::endl; // Print if no cycle found
+        return 0; // There is no cycle
     }
-
 
     int isBipartite(const Graph &g){
         // If there is a cycle in the graph -> it can't be a bipartite graph
-        if( isContainsCycle(g) != 0){
+        if(isContainsCycle(g) != 0){
             std::cout<<"0"<<std::endl;
             return 0;
         }
