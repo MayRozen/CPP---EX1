@@ -192,8 +192,8 @@ namespace Algorithms{
         }
 
         // Check for negative cycles
-        for (IndexType u = 0; u < numVertices; ++u) {
-            for (IndexType v = 0; v < numVertices; ++v) {
+        for (IndexType u = 0; u < numVertices; ++u) { // The vertex - source
+            for (IndexType v = 0; v < numVertices; ++v) { // destination
                 if (g.getAdjMatrix()[u][v] != 0) { // Check if there is an edge
                     if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
                         // Negative cycle found, construct the cycle and return it
@@ -204,9 +204,9 @@ namespace Algorithms{
                             vertex = (IndexType)prev[vertex];
                         } while (vertex != v);
 
-                        std::cout<<"The cycle is: "<<std::endl;
+                        std::cout<<"The negative cycle is: ";
                         for(IndexType i=0; i<cycle.size()-1; i++){
-                            std::cout<<cycle[i]<<"->"<<std::endl;
+                            std::cout<<cycle[i]<<"->";
                         }
                         std::cout<<cycle[cycle.size()-1]<<std::endl;
                         return cycle;
