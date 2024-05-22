@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 #include "Graph.hpp"
 using namespace ariel;
 
@@ -19,6 +20,10 @@ std::vector<std::vector<int>> Graph::getAdjMatrix() const{
 
 // setter to adjMatrix
 void Graph::loadGraph(const std::vector<std::vector<int>>& adjMat) {
+    if(adjMat.size() != adjMat[0].size()||adjMat.size() == 0){
+        throw std::invalid_argument("Error! The graph is not a square matrix or is empty.");
+    }
+
     this->adjMatrix = adjMat;
     this->numVertices = adjMat.size();
 }
