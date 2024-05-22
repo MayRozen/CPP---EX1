@@ -8,8 +8,8 @@ VALGRIND_FLAGS = -v --leak-check=full --show-leak-kinds=all --error-exitcode=99
 SOURCES = Graph.cpp Algorithms.cpp TestCounter.cpp Test.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 
-run: demo
-	./demo
+run: demo test
+	./demo ./test
 
 demo: Demo.o $(filter-out TestCounter.o Test.o, $(OBJECTS))
 	$(CXX) $(CXXFLAGS) -v $^ -o demo
