@@ -164,61 +164,64 @@ namespace Algorithms{
         return 1; // Graph is bipartite
     }
 
-    std::vector<int> negativeCycle(const Graph &g){  
-        // If there is no cycle in the graph -> there is no reason to continue. So print "0"
-        if(isContainsCycle(g) == 0){ // Will print "0"
-            return std::vector<int>(); // Return an empty vector if no negative cycle found
-        }
+    std::vector<int> negativeCycle(const Graph &g) {
+    // If there is no cycle in the graph -> there is no reason to continue. So print "0"
+    if (!isContainsCycle(g)) {
+        std::cout << "0" << std::endl;
+        return std::vector<int>(); // Return an empty vector if no cycle found
+    }
 
-        // Using Bellman-Ford algorithm to find the negative cycle
-        int numVertices = g.getNumVertices();
+    size_t numVertices = (size_t)g.getNumVertices();
+    std::vector<int> dist(numVertices, std::numeric_limits<int>::max());
+    std::vector<int> prev(numVertices, -1); // Store predecessors
+    dist[0] = 0; // Assuming vertex 0 is the starting vertex
 
-        // Intialize the distance and π(v) of the starting vertex
-        std::vector<int> dist(static_cast<size_t>(numVertices), std::numeric_limits<int>::max());
-        // Initialize distances to infinity
-        std::vector<int> prev(static_cast<size_t>(numVertices), -1); // Store predecessors
-
-        // Relax all edges repeatedly
-        for (IndexType i = 0; i < numVertices - 1; i++) {
-            for (IndexType u = 0; u < numVertices; u++) {
-                for (IndexType v = 0; v < numVertices; v++) {
-                    if ((g[u][v] != 0) && (dist[u] + g[u][v] < dist[v])){ // Check if there is an edge
-                            dist[v] = dist[u] + g[u][v];
-                            prev[v] = u;
-                    }
-                        
+    // Relax all edges repeatedly
+    for (size_t i = 0; i < numVertices - 1; i++) {
+        for (size_t u = 0; u < numVertices; u++) {
+            for (size_t v = 0; v < numVertices; v++) {
+                if (g.getAdjMatrix()[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
+                    dist[v] = dist[u] + g.getAdjMatrix()[u][v];
+                    prev[v] = u;
                 }
             }
         }
-
-        // Check for negative cycles
-        for (IndexType u = 0; u < numVertices; ++u) { // The vertex - source
-            for (IndexType v = 0; v < numVertices; ++v) { // destination
-                if (g.getAdjMatrix()[u][v] != 0) { // Check if there is an edge
-                    if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
-                        // Negative cycle found, construct the cycle and return it
-                        std::vector<int> cycle;
-                        IndexType vertex = v;
-                        do {
-                            cycle.push_back(vertex);
-                            vertex = (IndexType)prev[vertex];
-                        } while (vertex != v);
-
-                        std::cout<<"The negative cycle is: ";
-                        for(IndexType i=0; i<cycle.size()-1; i++){
-                            std::cout<<cycle[i]<<"->";
-                        }
-                        std::cout<<cycle[cycle.size()-1]<<std::endl;
-                        return cycle;
-                    }
-                }
-            }  
-        } 
-
-        std::cout<<"0"<<std::endl;
-        return std::vector<int>(); // No negative cycle found
-        
     }
+
+    // Check for negative cycles
+    for (size_t u = 0; u < numVertices; ++u) {
+        for (size_t v = 0; v < numVertices; ++v) {
+            if (g.getAdjMatrix()[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
+                // Negative cycle found, construct the cycle and return it
+                std::vector<int> cycle;
+                std::vector<bool> visited(numVertices, false);
+
+                // Move back through predecessors to ensure we're inside the cycle
+                for (size_t i = 0; i < numVertices; ++i) {
+                    v = (size_t)prev[v];
+                }
+
+                size_t start = v;
+                cycle.push_back(start);
+                for (size_t cur = (size_t)prev[start]; cur != start; cur = (size_t)prev[cur]) {
+                    cycle.push_back(cur);
+                }
+                cycle.push_back(start);
+                std::reverse(cycle.begin(), cycle.end());
+
+                std::cout << "The negative cycle is: ";
+                for (size_t i = 0; i < cycle.size() - 1; ++i) {
+                    std::cout << cycle[i] << " -> ";
+                }
+                std::cout << cycle.back() << std::endl;
+                return cycle;
+            }
+        }
+    }
+
+    std::cout << "0" << std::endl;
+    return std::vector<int>(); // No negative cycle found
+}
 
     //---------------------------Here are all the auxiliary functions---------------------------
 
