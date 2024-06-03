@@ -180,10 +180,23 @@ TEST_CASE("Test 1 negativeCycle")  // Checking the method - 'negativeCycle'
         {-1, 0, -1},
         {-1, 1, 0}};
     g.loadGraph(graph);
-    vector<int> ans = {1,1,1,1};
+    vector<int> ans = {2,1,0,2};
     
-    CHECK(Algorithms::negativeCycle(g)!=ans);
+    CHECK(Algorithms::negativeCycle(g)==ans);
     cout << "negativeCycle test 1 passed!" << endl;
+}
+TEST_CASE("Test 1 negativeCycle")  // Checking the method - 'negativeCycle'
+{
+    Graph g;
+    vector<vector<int>> graph = {
+        {0, 3, -1},
+        {-2, 0, -2},
+        {-1, 3, 0}};
+    g.loadGraph(graph);
+    vector<int> ans = {2,1,0,2};
+    
+    CHECK(Algorithms::negativeCycle(g)==ans);
+    cout << "negativeCycle test 2 passed!" << endl;
 }
 
 TEST_CASE("Test large graph") // Testing our algorithms about a large graph
