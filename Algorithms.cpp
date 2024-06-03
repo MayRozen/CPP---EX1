@@ -165,63 +165,64 @@ namespace Algorithms{
     }
 
     std::vector<int> negativeCycle(const Graph &g) {
-    // If there is no cycle in the graph -> there is no reason to continue. So print "0"
-    if (!isContainsCycle(g)) {
+        // If there is no cycle in the graph -> there is no reason to continue. So print "0"
+        if (!isContainsCycle(g)) {
+            std::cout << "0" << std::endl;
+            return std::vector<int>(); // Return an empty vector if no cycle found
+        }
+
+        size_t numVertices = (size_t)g.getNumVertices();
+        std::vector<int> dist(numVertices, std::numeric_limits<int>::max());
+        std::vector<int> prev(numVertices, -1); // Store predecessors
+        dist[0] = 0; // Assuming vertex 0 is the starting vertex
+
+        // Relax all edges repeatedly
+        for (size_t i = 0; i < numVertices - 1; i++) {
+            for (size_t u = 0; u < numVertices; u++) {
+                for (size_t v = 0; v < numVertices; v++) {
+                    if (g.getAdjMatrix()[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
+                        dist[v] = dist[u] + g.getAdjMatrix()[u][v];
+                        prev[v] = u;
+                    }
+                }
+            }
+        }
+
+        // Check for negative cycles -> relax at the n's time
+        for (size_t u = 0; u < numVertices; ++u) {
+            for (size_t v = 0; v < numVertices; ++v) {
+                if (dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
+                    // Negative cycle found, construct the cycle and return it
+                    std::vector<int> cycle;
+                    std::vector<bool> visited(numVertices, false);
+
+                    // Move back through predecessors to ensure we're inside the cycle
+                    for (size_t i = 0; i < numVertices; ++i) {
+                        v = (size_t)prev[v];
+                    }
+
+                    size_t start = v;
+                    cycle.push_back(start);
+                    // Put all the vertexes in the cycle-vector
+                    for (size_t cur = (size_t)prev[start]; cur != start; cur++) {
+                        cycle.push_back(cur);
+                    }
+                    cycle.push_back(start);
+                    std::reverse(cycle.begin(), cycle.end());
+
+                    std::cout << "The negative cycle is: ";
+                    for (size_t i = 0; i < cycle.size() - 1; ++i) { // Print all the vertexes fo the cycle
+                        std::cout << cycle[i] << "->";
+                    }
+                    std::cout << cycle.back() << std::endl; // Print the first point again
+                    return cycle;
+                }
+            }
+        }
+
         std::cout << "0" << std::endl;
-        return std::vector<int>(); // Return an empty vector if no cycle found
+        return std::vector<int>(); // No negative cycle found
     }
-
-    size_t numVertices = (size_t)g.getNumVertices();
-    std::vector<int> dist(numVertices, std::numeric_limits<int>::max());
-    std::vector<int> prev(numVertices, -1); // Store predecessors
-    dist[0] = 0; // Assuming vertex 0 is the starting vertex
-
-    // Relax all edges repeatedly
-    for (size_t i = 0; i < numVertices - 1; i++) {
-        for (size_t u = 0; u < numVertices; u++) {
-            for (size_t v = 0; v < numVertices; v++) {
-                if (g.getAdjMatrix()[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
-                    dist[v] = dist[u] + g.getAdjMatrix()[u][v];
-                    prev[v] = u;
-                }
-            }
-        }
-    }
-
-    // Check for negative cycles
-    for (size_t u = 0; u < numVertices; ++u) {
-        for (size_t v = 0; v < numVertices; ++v) {
-            if (g.getAdjMatrix()[u][v] != 0 && dist[u] != std::numeric_limits<int>::max() && dist[u] + g.getAdjMatrix()[u][v] < dist[v]) {
-                // Negative cycle found, construct the cycle and return it
-                std::vector<int> cycle;
-                std::vector<bool> visited(numVertices, false);
-
-                // Move back through predecessors to ensure we're inside the cycle
-                for (size_t i = 0; i < numVertices; ++i) {
-                    v = (size_t)prev[v];
-                }
-
-                size_t start = v;
-                cycle.push_back(start);
-                for (size_t cur = (size_t)prev[start]; cur != start; cur = (size_t)prev[cur]) {
-                    cycle.push_back(cur);
-                }
-                cycle.push_back(start);
-                std::reverse(cycle.begin(), cycle.end());
-
-                std::cout << "The negative cycle is: ";
-                for (size_t i = 0; i < cycle.size() - 1; ++i) {
-                    std::cout << cycle[i] << " -> ";
-                }
-                std::cout << cycle.back() << std::endl;
-                return cycle;
-            }
-        }
-    }
-
-    std::cout << "0" << std::endl;
-    return std::vector<int>(); // No negative cycle found
-}
 
     //---------------------------Here are all the auxiliary functions---------------------------
 
